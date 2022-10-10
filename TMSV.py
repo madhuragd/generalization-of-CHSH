@@ -17,10 +17,10 @@ import os
 
 ####### Internal functions in the CHSH inequality #######
 
-f1 = lambda r,x: np.exp(-abs(x)**2)*np.exp(np.tanh(r)**2)**(np.abs(x)**2)
-f2 = lambda r,t,x,y: np.exp(-abs(x)**2-abs(y)**2)*np.exp(-2*(np.exp(1j*t)*x*y).real*np.tanh(r))
-# Function $g_{i,j}=\bra{\Psi_{TMSV}}A(x_i) \otimes A(y_i)\ket{\Psi_{TMSV}}$ in manuscript
-f3 = lambda r,t,x,y: 1+(-2*f1(r,x)-2*f1(r,y)+4*f2(r,t,x,y))/np.cosh(r)**2
+f1 = lambda r,x: np.exp(-abs(x)**2/np.cosh(r)**2)
+f2 = lambda r,x,y: np.exp(-abs(x)**2-abs(y)**2-2*(*x*y).real*np.tanh(r))
+# Function $g_{r,i,j}=\bra{\Psi_{TMSV(r)}}A(\beta_i) \otimes A(\gamma_i)\ket{\Psi_{TMSV}(r)}$ in manuscript
+f3 = lambda r,x,y: 1+(-2*f1(r,x)-2*f1(r,y)+4*f2(r,x,y))/np.cosh(r)**2
 
 ##########   Calculating CHSH bound   ############
 
@@ -42,13 +42,12 @@ def CHSH_sq(n):
         beta = np.zeros(n,dtype=np.clongdouble) #beta_1 = 0
         gamma = np.zeros(n,dtype=np.clongdouble) #gamma_1 = 0
         r = x[0]
-        t = 0
         x1 = x[1:]#+1j*x[2*n:]
         beta[1:] = x1[:n-1]
         gamma[1:] = x1[n-1:]
         
         # Expectation value of S (L.H.S. of CHSH inequality) for |Psi_{TMSV}>
-        chsh_val = (sum([f3(r,t,beta[i],gamma[i]) for i in range(n)]) +                     sum([f3(r,t,beta[i],gamma[(i+1)%n]) for i in range(n)]) -                     2*f3(r,t,beta[0],gamma[n-1]))
+        chsh_val = (sum([f3(r,beta[i],gamma[i]) for i in range(n)]) + sum([f3(r,beta[i],gamma[(i+1)%n]) for i in range(n)]) - 2*f3(r,beta[0],gamma[n-1]))
         return -np.abs(chsh_val) # Negative of expected value
     return inn_fn
 
