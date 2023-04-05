@@ -60,19 +60,27 @@ def optimizeCHSH(n):
     for which optimal value of function
     is achieved.
     """
-    m = 200
+    m = 300
+#     t = time()  
+#     min_res = [minimize(max_viol(n),np.random.randn(4*n)) for _ in range(m)]
+#     print(n, np.abs(t-time()))
+    rn = np.random.randn(1)
+    x0 = np.arange(4*n)*rn
     t = time()  
     min_res = [minimize(max_viol(n),np.random.randn(4*n)) for _ in range(m)]
-    print(n, np.abs(t-time()))
+    # min_res = [minimize(max_viol(n),) for _ in range(300)] #np.random.randn(4*n)
+    if n>7:
+        min_res = [minimize(max_viol(n),x0) for _ in range(m)] #np.random.randn(4*n)
+    print(n,t-time(),min(i['fun'] for i in min_res))
     min_fun = [m['fun'] for m in min_res]
     return n, -min(min_fun), min_res[min_fun.index(min(min_fun))].x 
 
 
 # d = [optimizeCHSH(n) for n in range(3,8)]
+## Comment above line and then run to plot from file which gathers previously compiled data
 
 #####################     Plot Details    ########################## 
 
-## Comment above line and then run to plot from file which gathers previously compiled data
 path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\" #change path to where file is stored
 
 with open(path+'n3to8.pi','rb') as f:
