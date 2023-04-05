@@ -66,11 +66,12 @@ def optimizeCHSH(n):
 #     print(n, np.abs(t-time()))
     rn = np.random.randn(1)
     x0 = np.arange(4*n)*rn
-    t = time()  
-    min_res = [minimize(max_viol(n),np.random.randn(4*n)) for _ in range(m)]
-    # min_res = [minimize(max_viol(n),) for _ in range(300)] #np.random.randn(4*n)
+    t = time()
     if n>7:
         min_res = [minimize(max_viol(n),x0) for _ in range(m)] #np.random.randn(4*n)
+    else:
+      min_res = [minimize(max_viol(n),np.random.randn(4*n)) for _ in range(m)]
+    # min_res = [minimize(max_viol(n),) for _ in range(300)] #np.random.randn(4*n)
     print(n,t-time(),min(i['fun'] for i in min_res))
     min_fun = [m['fun'] for m in min_res]
     return n, -min(min_fun), min_res[min_fun.index(min(min_fun))].x 
