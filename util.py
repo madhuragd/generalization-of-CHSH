@@ -25,6 +25,24 @@ def LHS_of_BCCB(beta,gamma):
 	obsB = one_party_local_observables(gamma)
 	return sum([np.kron(obsA[i],obsB[i]) + np.kron(obsA[(i+1)%n],obsB[i]) for i in range(n)])-2*np.kron(obsA[0],obsB[n-1])
 
+def pickle_results(file_name, optimize_function, range_of_n):
+	for n in range_of_n:
+		o = optimize_function(n,num_opti)
+		if file_name in os.listdir(): # Stores in file: file_name
+			with open(file_name,'rb') as f:
+				d = load(f)
+				if n in d and o['fun'] < d[n]['fun'] or n not in d:
+				# Stores in file if max_viol(n) was not optimized previously 
+				# or optimization result is better than previous iteration.
+					d[n] = o
+					with open(file_name,'wb') as f:
+						dump(d,f)
+		else:
+		# In the first run, generates the file: file_name with
+		# a initial run of optimization.
+			d = {n:o}
+			with open(file_name,'wb') as f:
+				dump(d,f)
 
 if __name__ == "__main__":
 	setting = (np.array([0+0j,1+1j]))
