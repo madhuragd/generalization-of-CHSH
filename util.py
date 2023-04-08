@@ -34,7 +34,6 @@ def n_successfull(f: callable, init_point: callable, num_opti: int):
 """
 	i = 0
 	while i < num_opti:
-		yield minimize(f,init_point(),method='Powell',tol=1e-15)
 		try:
 			yield minimize(f,init_point(),method='Powell',tol=1e-15)
 			i+=1
