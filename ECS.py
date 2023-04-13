@@ -68,7 +68,6 @@ def chsh(n):
 		#gamma_B = np.zeros(n,dtype=np.clongdouble) #gamma_1 = 0
 		x = x[:2*n+2]+1j*x[2*n+2:] # Modifying x to have 2n complex numbers
 		a1,a = x[:2]
-		a1 = 1+0j
 		b = 0j
 		c = 0j
 		d = a
@@ -90,7 +89,7 @@ def max_violation(n):
     ii. Optimal x
     """
     t = time()
-    m = 100
+    m = 300
     min_res = [minimize(chsh(n),np.random.rand(4*n+4).astype(np.longdouble)) for _ in range(m)] # Can change m=50 to 100,200,etc. to inc. no. 
                                                                                                 # of times initial parameters are tossed
     min_res = min(min_res, key = itemgetter('fun'))
@@ -120,21 +119,3 @@ for n in range(min_n,max_n):
         x = {n:o}
         with open('max_chsh_ecs.pi','wb') as f:
             dump(x,f)
-
-"""
-2 45.485100507736206 -2.1315801569528983
-3 97.50924301147461 -4.263160313905296
-4 155.46684455871582 -6.139938995789071
-5 242.92987608909607 -8.079297739081685
-6 369.5078945159912 -10.04862111020177
-7 495.89490723609924 -11.999999999999725
-8 675.0977785587311 -13.999999999999691
-9 993.0350825786591 -16.014919229099846
-
-2 44.51205778121948 -2.131443444334619
-3 93.84982514381409 -4.262886888669525
-4 160.82718062400818 -6.1389220244771305
-
-
-"""
-
