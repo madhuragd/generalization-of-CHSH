@@ -1,121 +1,164 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[27]:
-
-
-## Code to calculate the maximal CHSH bound for n-MZI+ECS setting.
-
 import numpy as np
 from scipy.optimize import minimize
-from _pickle import dump, load
-import matplotlib.pyplot as plt
 from operator import itemgetter
 from time import time
-import math
-import os
 
-####### Internal functions in the CHSH inequality #######
+## Code to calculate the maximal BCCB ineq. violation for n-MZI+ECS setting.
+
+####### Internal functions in the BCCB inequality #######
 
 def coh_state_prod(x,y):
 	"""
 	For displacements x,y returns the inner product of related coderent states: \bra{x}\ket{y}
 	""" 
 	return np.exp(-np.abs(x-y)**2/2+1j*(x.conjugate()*y).imag)
-	
+
 def one_party_expv(x,y,b):
 	"""
 	For displacements x,y,b returns: \bra{x}(I - 2\ket{x}\bra{b})\ket{y}
 	"""  
 	return coh_state_prod(x,y) - 2*coh_state_prod(x,b)*coh_state_prod(b,y)
 
-# Function $f_{i,j}=\bra{\Psi_E}A(x_i) \otimes A(y_i)\ket{\Psi_E}$ in manuscript
-def two_party_expv(a1,a,b,c,d,b1,b2):
+def two_party_expv(a,alpha,b,c,d,b1,b2):
 	"""
-	For displacements a,b,c,d,b1,b2 and complex amplitude a1, 
+	For displacements alpha,b,c,d,b1,b2 and complex amplitude a, 
 	returns an expected value of (I - 2\ket{b1}\bra{b1})\otimes(I - 2\ket{b2}\bra{b2}) 
-	in the (unnormalised) pure state (a1 * \ket{a}\otimes\ket{b} + \ket{c}\otimes\ket{d})
+	in the (unnormalised) pure state (a * \ket{alpha}\otimes\ket{b} + \ket{c}\otimes\ket{d})
 	""" 
-	return (np.abs(a1)**2 * one_party_expv(a,a,b1)*one_party_expv(c,c,b2) + \
-			2*a1*one_party_expv(b,a,b1)*one_party_expv(d,c,b2) + 
-			one_party_expv(b,b,b1)*one_party_expv(d,d,b2)).real
+	return (np.abs(a)**2 * one_party_expv(alpha,alpha,b1)*one_party_expv(c,c,b2) +\
+		2*a*one_party_expv(b,alpha,b1)*one_party_expv(d,c,b2) +\
+		one_party_expv(b,b,b1)*one_party_expv(d,d,b2)).real
 
-def norm2(a1,a,b,c,d):
+def norm2(a,alpha,b,c,d):
 	"""
 	Returns the squared norm of the state vector:
-	(a1 * \ket{a}\otimes\ket{b} + \ket{c}\otimes\ket{d})
+	(a * \ket{alpha}\otimes\ket{b} + \ket{c}\otimes\ket{d})
 	""" 
-	return np.abs(a1)**2 + 2*(a1*coh_state_prod(b,a)*coh_state_prod(d,c)).real + 1
+	return np.abs(a)**2 + 2*(a*coh_state_prod(b,alpha)*coh_state_prod(d,c)).real + 1
 
-##########   Calculating CHSH bound   ############
-
-def chsh(n):
+def bccb_expv(a,alpha,b,c,d,beta,gamma):
 	"""
-	Function for calculating the bound of the 
-	CHSH inequality for ECS: <\Psi_E|S|\Psi_E>.
-	Parameters: n = number of settings per party
-	Inner function is used to provide a second 
-	parameter: x = array_like; it takes the random
-	initial guess for: 
-	i. {beta_i} = beta_A
-	ii. {gamma_j} = gamma_B
-	iii. alpha, epsilon, eta = a,b,c
+	For a,alpha,b,c,d - parameters of entangled coherent state and beta, gamma -
+	"""
+	bccb_val = (sum([two_party_expv(a,alpha,b,c,d,beta[i],gamma[i]) for i in range(n)]) + \
+			sum([two_party_expv(a,alpha,b,c,d,beta[i],gamma[(i+1)%n]) for i in range(n)]) - \
+			2*two_party_expv(a,alpha,b,c,d,beta[0],gamma[(n-1)])) / norm(a,alpha,b,c,d)
+		return -bccb_val
 
-	Optimization is performed over x.
+##########   Calculating the BCCB ineq. expected value   ############
+
+def bccb(param: callable, n: int):
+	"""
+	For a given n, returns a function inn calculating for the given array x 
+	the expected value of BCCB inequality in entangled coherent state described by parameters a,alpha,b,c,d
+	and for sequences of MZI observables defined in arrays: beta and gamma for the first and the second party respectively.
+	The first parameter param is a function translating a real array x into a,alpha,b,c,d,beta,gamma    
 	"""
 	def inn(x):
-		#beta_A = np.zeros(n,dtype=np.clongdouble) #beta_1 = 0
-		#gamma_B = np.zeros(n,dtype=np.clongdouble) #gamma_1 = 0
-		x = x[:2*n+2]+1j*x[2*n+2:] # Modifying x to have 2n complex numbers
-		a1,a = x[:2]
-		b = 0j
-		c = 0j
-		d = a
-		beta_A = x[2:n+2]
-		gamma_B = x[n+2:]
-		
-		# Expectation value of S (L.H.S. of CHSH inequality) for |Psi_E>
-		chsh_val = (sum([two_party_expv(a1,a,b,c,d,beta_A[i],gamma_B[i]) + two_party_expv(a1,a,b,c,d,beta_A[i],gamma_B[(i+1)%n]) for i in range(n)]) \
-		-2*two_party_expv(a1,a,b,c,d,beta_A[0],gamma_B[(n-1)]))/norm2(a1,a,b,c,d)
-		return -chsh_val # Negative of expected value
+		a,alpha,b,c,d,beta,gamma = param(n,x)
+		bccb_val = (sum([two_party_expv(a,alpha,b,c,d,beta[i],gamma[i]) for i in range(n)]) + \
+			sum([two_party_expv(a,alpha,b,c,d,beta[i],gamma[(i+1)%n]) for i in range(n)]) - \
+			2*two_party_expv(a,alpha,b,c,d,beta[0],gamma[(n-1)])) / norm(a,alpha,b,c,d)
+		return -bccb_val
 	return inn
 
-def max_violation(n):
+###########  Different parametrisations ##############
+
+def param1(n,x):	# alpha, a: real, displacements: real, beta_1 = ... = beta_{n-2}, beta_{n-1} = beta_n, gamma_1 = gamma_{n-1}, gamma_2 = ... = gamma_{n-2} 
+	alpha,a,beta_1,beta_n,gamma_1,gamma_2,gamma_n=x
+	b = 0;	c = 0;	d = -alpha
+	beta = np.zeros(n,dtype=np.clongdouble)
+	gamma = np.zeros(n,dtype=np.clongdouble)
+	beta[:n-2] = beta_1
+	beta[n-2:] = beta_n
+	gamma[1] = gamma_1
+	gamma[1:n-2] = gamma_2
+	gamma[n-2] = gamma_1
+	gamma[n-1] = gamma_n
+	return a,alpha,b,c,d,beta,gamma
+	
+param1.size = lambda n: 7
+
+def param2(n,x):	# alpha, a: real, displacements: real, beta_1 = ... = beta_{n-2}, beta_{n-1} = beta_n, gamma_1 = gamma_{n-1}
+	alpha,a,beta_1,beta_n=x[:4]
+	b = 0;	c = 0;	d = -alpha
+	beta = np.zeros(n,dtype=np.clongdouble)
+	beta[:n-2] = beta_1
+	beta[n-2:] = beta_n
+	gamma = np.zeros(n,dtype=np.clongdouble)
+	gamma[1:] = x[4:]
+	gamma[0] = gamma[n-2]
+	return a,alpha,b,c,d,beta,gamma
+
+param2.size = lambda n: n+3
+
+def param3(n,x):	# alpha, a: real, displacements: real
+	alpha,a = x[:2]
+	x = x[2:]
+	beta = x[:n]
+	gamma = x[n:]
+	b = 0;	c = 0;	d = -alpha
+	return a,alpha,b,c,d,beta,gamma
+
+param3.size = lambda n: 2*n+2
+
+def param4(n,x):	# alpha, a: real, displacements: complex
+	alpha,a = x[:2]
+	x = x[2:2*n+2]+1j*x[2*n+2:]
+	beta = x[:n]
+	gamma = x[n:]
+	b = 0;	c = 0;	d = -alpha
+	return a,alpha,b,c,d,beta,gamma
+
+param4.size = lambda n: 4*n+2
+
+def param5(n,x):	# alpha, a: complex, displacements: complex
+	x = x[:2*n+2]+1j*x[2*n+2:]
+	alpha,a = x[:2]
+	x=x[2:]
+	beta = x[:n]
+	gamma = x[n:]
+	b = 0;	c = 0;	d = -alpha
+	return a,alpha,b,c,d,beta,gamma
+
+param5.size = lambda n: 4*n+4
+
+############################
+
+def max_violation(n: int, m=300):
+	"""
+    Two-stage optimization protocol for given n - the number of MZI settings for each party.
+    On the first stage the optimisation over a reduced set of parameters is performed m times.
+    The best result is a starting point for the second stage optimisation which is performed 
+    once over the full set of parameters. The function returns the result of the second stage 
+    optimisation.
     """
-    Optimization protocol performed on a loop of m times
-    for a given n. Stores the minimum value of function 
-    obtained from the m optimized values. Parameters stored:
-    i. Minimized value of chsh(n)
-    ii. Optimal x
-    """
-    t = time()
-    m = 300
-    min_res = [minimize(chsh(n),np.random.rand(4*n+4).astype(np.longdouble)) for _ in range(m)] # Can change m=50 to 100,200,etc. to inc. no. 
-                                                                                                # of times initial parameters are tossed
-    min_res = min(min_res, key = itemgetter('fun'))
-    print(n,time()-t,min_res['fun']) # Prints n, time of computation, min chsh(n)
-    return min_res
+	if n==2:
+		param = param3
+	elif n==6:
+		param = param2
+	else:
+		param = param1
+	t = time()
+	min_res = [minimize(bccb(param,n),np.random.rand(param.size(n)).astype(np.longdouble)) for _ in range(m)]
+	min_res = min(min_res,key = itemgetter('fun'))
+	print(f"n={n}, 1st stage violation: {-min_res['fun']-2*(n-1)}, time: {time()-t},", end=" ")
+	t=time()
+	x = min_res['x']
+	a,alpha,b,c,d,beta,gamma = param(n,x)
+	x = np.concatenate([beta,gamma])
+	x = x.real									# if param3 in the 2nd stage
+	#x = np.concatenate([x.real,x.imag])		# if param4 in the 2nd stage
+	x = np.concatenate([np.array([alpha,a]),x])
+	min_res = minimize(bccb(param3,n),x)
+	print(f"2nd stage violation {-min_res['fun']-2*(n-1)}, time: {time()-t}")
+	return min_res
 
+if __name__ == "__main__":
 
-############   Obtaining and storing results   ############
+	from util import pickle_results 
 
-min_n = 2 # Min. n for doing above calculations
-max_n = 20 # Max. n for doing above calculations
-
-for n in range(min_n,max_n):
-    o = max_violation(n)
-    if 'max_chsh_ecs.pi' in os.listdir():  # Stores in filename "max_chsh_ecs.pi"
-        with open('max_chsh_ecs.pi','rb') as f:
-            x = load(f)
-            if n in x and o['fun'] < x[n]['fun'] or n not in x:
-            # Stores in file if chsh(n) was not optimized previously 
-            # or optimization result is better than previous iteration.
-                x[n] = o
-                with open('max_chsh_ecs.pi','wb') as f:
-                    dump(x,f)
-    else:
-    # In the first run, generates the file max_chsh_ecs.pi with
-    # a initial run of optimization.
-        x = {n:o}
-        with open('max_chsh_ecs.pi','wb') as f:
-            dump(x,f)
+	pickle_results('max_viol_ecs.pi', max_violation, range(2,20))

@@ -14,17 +14,16 @@ import numpy as np
 
 ###### Retrieving calculated values from all relevant files #########
 
-path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
-with open(path+'max_chsh_ecs.pi','rb') as f:
+with open('max_chsh_ecs.pi','rb') as f:
     results_ECS = load(f)
     res_list_ECS = [(k, v) for k, v in results_ECS.items()]
 
-with open(path+'max_chsh_tmsv.pi','rb') as f:
+with open('max_chsh_tmsv.pi','rb') as f:
     results_TMSV = load(f)
     res_list_TMSV = results_TMSV
     # res_list_TMSV = [(k, v) for k, v in results_TMSV.items()]
     
-with open(path+'max_chsh_eig.pi','rb') as f:
+with open('max_chsh_eig.pi','rb') as f:
     results_MZI = load(f)
     res_list_MZI = [(k, v) for k, v in results_MZI.items()]
     
@@ -49,13 +48,17 @@ viol_squeez = [(n[0],(n[1]-2*n[0]+2)) for n in squeez] # MZI + TMSV
 
 plt.plot(*zip(*viol_expecs),'r.', *zip(*viol_evalls),'b^', *zip(*viol_encohs), 'k*',*zip(*viol_squeez), 'y*')
 
-plt.legend(["Generalized CHSH","CHSH for $n$-MZI settings","MZI+ECS","MZI+TMSV"], bbox_to_anchor=(1, 0.39))
+plt.legend(["Quantum bound for BCCB inequality",
+			"Bound for BCCBi with $n$-MZI settings",
+			"Bound for BCCBi with MZI + EC states",
+			"Bound for BCCBi with MZI + TMSV states"], 
+			bbox_to_anchor=(1, 0.37))
 plt.xlabel(r"$n$",fontsize=14)
 plt.xticks(np.arange(2, 21, step=2))
 plt.minorticks_on()
 plt.ylabel(r"$\mathrm{D}(n)$",fontsize=14)
 plt.title(r'$\mathrm{D}(n)$ vs. $n$',fontsize=15)
-plt.savefig(path+'max_viol_all2.pdf', format='pdf', bbox_inches="tight") # Saves figure
+plt.savefig('max_viol_all2.pdf', format='pdf', bbox_inches="tight") # Saves figure
 plt.show()
 
 ### Plots CHSH violations for theoretical and n-MZI settings only 
@@ -67,7 +70,7 @@ plt.xticks(np.arange(2, 21, step=2))
 plt.minorticks_on()
 plt.ylabel(r"$\mathrm{D}(n)$",fontsize=14)
 plt.title(r'$\mathrm{D}(n)$ vs. $n$',fontsize=15)
-plt.savefig(path+'max_viol_all.pdf', format='pdf', bbox_inches="tight") # Saves figure
+plt.savefig('max_viol_all.pdf', format='pdf', bbox_inches="tight") # Saves figure
 plt.show()
 
 
@@ -99,6 +102,6 @@ axs[1].set_xticks(np.arange(2,21,step=2))
 plt.minorticks_on()
 plt.text(-2.7, 17, '(b)', fontsize=14)
 
-plt.savefig(path+'absD_vs_n.pdf', format='pdf') # Saves figure
+plt.savefig('absD_vs_n.pdf', format='pdf') # Saves figure
 plt.show()
 
