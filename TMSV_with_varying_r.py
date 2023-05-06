@@ -101,7 +101,7 @@ for n in range(n_min,n_max):
     plt.xlabel(r'$r$',fontsize=14)
     # plt.text(gamma[0]-0.05,n-0.5,r'$r=$%s'%m,fontsize=11)
     plt.title(r'$D(n)$ vs. $r$',fontsize=15)
-path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
-plt.savefig(path+'tmsv_viol_r.pdf', format='pdf',bbox_inches="tight") # Saves figure
+# path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
+plt.savefig('tmsv_viol_r.pdf', format='pdf',bbox_inches="tight") # Saves figure
 plt.show()
 
