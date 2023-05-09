@@ -77,7 +77,7 @@ def max_viol(n):
   return inner_fn
 
 
-path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\ECS\\"
+# path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\ECS\\"
 def gen_guess(n,x):
     # x = np.random.rand(2)
     D1,D2 = x[:]
@@ -86,7 +86,7 @@ def gen_guess(n,x):
     return guess_beta+guess_gamma
 
 
-with open(path+'max_chsh_eig.pi','rb') as f:
+with open('max_chsh_eig.pi','rb') as f:
     results_guess = load(f)
     res_list_guess = [(k, v) for k, v in results_guess.items()]
     
