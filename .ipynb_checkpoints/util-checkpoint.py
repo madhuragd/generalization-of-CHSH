@@ -1,5 +1,6 @@
 from operator import itemgetter
 import numpy as np
+from scipy.optimize import minimize
 from _pickle import dump,load
 import os
 import matplotlib.pyplot as plt
@@ -32,15 +33,20 @@ where observables are defined by displacements betas, gammas for respective part
 	return sum([np.kron(obsA[i],obsB[i]) + np.kron(obsA[(i+1)%n],obsB[i]) for i in range(n)])-2*np.kron(obsA[0],obsB[n-1])
 
 def n_successfull(f: callable, init_point: callable, num_opti: int):
-	"""returns n_opti successfull optimisations of f with initial point produced each time by init_point
-"""
-	i = 0
-	while i < num_opti:
-		try:
-			yield minimize(f,init_point(),method='Powell',tol=1e-15)
-			i+=1
-		except:
-			continue
+    i = 0
+    # j = 0
+    
+    while i < num_opti:
+        # yield minimize(f,init_point(),method='Powell',tol=1e-15)
+        
+        try:
+            yield minimize(f,init_point(),method='Powell',tol=1e-15)
+            i+=1
+            # print('bye')
+        except:
+            # print('hi')
+            continue
+            
 
 def optimize(f: callable, init_point: callable, num_opti: int):
 	"""returns the function prescribing to n the minimum over num_opti successfull optimisations. 
@@ -50,7 +56,18 @@ init_point returns for n an argumentless function returning a random init point
 	def inner_fn(n):
 		min_res = min(n_successfull(f(n),init_point(n),num_opti), key=itemgetter('fun'))
 		print(n, min_res['fun'])
-		return -min_res['fun'], min_res.x
+		return min_res
+	return inner_fn
+
+def two_stage_optimize(f: callable, init_point: callable):
+	"""returns the function prescribing to n the minimum over num_opti successfull optimisations. 
+f returns for n an optimised function, 
+init_point returns for n an argumentless function returning a random init point
+"""
+	def inner_fn(n):
+		min_res = minimize(f(n),init_point(n),method='Powell',tol=1e-15)
+		print(n, min_res['fun'])
+		return min_res
 	return inner_fn
 
 def pickle_results(file_name, optimize_function, range_of_n):
