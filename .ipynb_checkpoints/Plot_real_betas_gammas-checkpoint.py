@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from _pickle import load, dump
 import numpy as np
 
-with open('n3to8_real.pi','rb') as f:
+with open('Eig_real.pi','rb') as f:
     results = load(f)
     res_list = [(k, v) for k, v in results.items()]
     
@@ -20,10 +20,10 @@ for j in range(1,len(res_list)): #1,len(res_list)
   beta[1:] = x[n-1:] #+ 1j * x[3*n:]
 
 ## Separating real and imaginary parts for betas and gammas
-  x1 = [i.real for i in gamma]
-  y1 = [i.imag for i in gamma]
-  x2 = [i.real for i in beta]
-  y2 = [i.imag for i in beta]
+  x1 = [i for i in gamma]
+  y1 = [0 for i in gamma]
+  x2 = [i for i in beta]
+  y2 = [0 for i in beta]
 
   if j < 4:
       axs[0][j-1].scatter(x1,y1,label=r'$\beta_i$')
@@ -43,5 +43,6 @@ for j in range(1,len(res_list)): #1,len(res_list)
   plt.legend()
   axs[0][2].legend(bbox_to_anchor=(1, 1.02))
   fig.show()
+  # plt.show()
   
-  # plt.savefig('real_betas_gammas.pdf', format='pdf', bbox_inches="tight") # Saves figure
+  plt.savefig('real_betas_gammas.pdf', format='pdf', bbox_inches="tight") # Saves figure
