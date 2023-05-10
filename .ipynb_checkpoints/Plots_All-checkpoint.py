@@ -19,17 +19,15 @@ with open('max_viol_ecs.pi','rb') as f:
     res_list_ECS = [(k, v) for k, v in results_ECS.items()]
 
 with open('max_chsh_tmsv.pi','rb') as f:
-    results_TMSV = load(f)
-    res_list_TMSV = results_TMSV
+    res_list_TMSV = load(f)
+    # res_list_TMSV = results_TMSV
     # res_list_TMSV = [(k, v) for k, v in results_TMSV.items()]
     
-with open('max_chsh_eig.pi','rb') as f:
+with open('Eig_second_stage.pi','rb') as f:
     results_MZI = load(f)
     res_list_MZI = [(k, v) for k, v in results_MZI.items()]
 	
-with open(path+'n3to8_real.pi','rb') as f:
-    results_real = load(f)
-    res_list_real = [(k, v) for k, v in results_real.items()]
+
     
     
 
@@ -80,38 +78,6 @@ plt.savefig('max_viol_all.pdf', format='pdf', bbox_inches="tight") # Saves figur
 plt.show()
 
 
-### Plots \Delta (diff. between arithmentic sequences of {\beta_i} and {\gamma_i}) and 1/|\Delta| vs. n:
-
-fig = plt.figure(figsize=(10,4)) 
-axs = [fig.add_subplot(1,2,i+1) for i in range(2)]
-fig.subplots_adjust(wspace=0.3, hspace=0.2)
-
-###### Plotting |\Delta| vs. n ######
-
-Delta = [(n[0],np.abs(n[1].x.tolist())) for n in res_list_MZI[:18]] # Stores |\Delta| in a list
-axs[0].plot(*zip(*Delta[:18]),'k.',markersize = 10)
-axs[0].set_title('$|\Delta|$ vs. $n$',fontsize=14)
-axs[0].set_xlabel("$n$", fontsize=14)
-axs[0].set_ylabel("$|\Delta|$", fontsize=14)
-axs[0].set_xticks(np.arange(2,21,step=2))
-axs[0].minorticks_on()
-plt.text(-27, 17, '(a)', fontsize=14)
-
-###### Plotting 1/|\Delta| vs. n #######
-
-absDelta_inv = [(n[0],1/np.abs(n[1])) for n in Delta] # Stores 1/|\Delta| in a list
-axs[1].plot(*zip(*absDelta_inv),'b.',markersize=8)
-axs[1].set_title('$1/|\Delta|$ vs. $n$',fontsize=15)
-axs[1].set_xlabel("$n$", fontsize=14)
-axs[1].set_ylabel("$1/|\Delta|$", fontsize=14)
-axs[1].set_xticks(np.arange(2,21,step=2))
-plt.minorticks_on()
-plt.text(-2.7, 17, '(b)', fontsize=14)
-
-plt.savefig('absD_vs_n.pdf', format='pdf') # Saves figure
-plt.show()
-
-
 ##### Plots BCCBi violation for n-MZI with fitting
 
 from scipy.optimize import curve_fit
@@ -142,24 +108,4 @@ plt.show()
 
 
 
-##### Plots TMSV violation with fitting
 
-### Function to fit
-def func_sq(x,a,c,b):
-    return a + c*(np.exp(-b*x)) #-np.exp(-2*b)
-
-xdata_tmsv = [n[0] for n in viol_squeez] # n values
-ydata_tmsv = [n[1] for n in viol_squeez] # D(n) values
-popt_tmsv, pcov_tmsv = curve_fit(func_sq, xdata_tmsv, ydata_tmsv) # Fitting
-
-# popt_tmsv =  optimal fitted values for a,b,c;  pcov_tmsv = covariance matrix of fit
-
-fitted_tmsvx = [func_sq(x,popt_tmsv[0],popt_tmsv[1],popt_tmsv[2]) for x in np.linspace(2,20,100)] # Fitted function for n in [2,20) 
-plt.plot(np.linspace(2,20,100),fitted_tmsvx,'r-',xdata_tmsv,ydata_tmsv,'y*') # Plots violation and fitting
-plt.legend(["Fitting for TMSV optimisation","Bound for TMSV optimisation"], bbox_to_anchor=(0.2, 0.5))
-plt.xlabel(r"$n$",fontsize=14)
-plt.xticks(np.arange(2, 21, step=2))
-plt.minorticks_on()
-plt.ylabel(r"$\mathrm{D}(n)$",fontsize=14)
-plt.title(r'$\mathrm{D}(n)$ vs. $n$',fontsize=15)
-plt.savefig('TMSV_with_fitting.pdf', format='pdf', bbox_inches="tight") # Saves figure

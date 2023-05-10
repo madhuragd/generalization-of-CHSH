@@ -125,7 +125,7 @@ def optimizeCHSH(n):
     x0 = guess_all[n-2]
     t = time()
     # print()
-    print(max_viol(n)(x0))
+    # print(max_viol(n)(x0))
     min_res = [minimize(max_viol(n),x0) for _ in range(1)] #np.random.randn(4*n)
     print(n,t-time(),min(i['fun'] for i in min_res))
     # min_fun = [m['fun'] for m in min_res]
@@ -133,7 +133,7 @@ def optimizeCHSH(n):
 
 
 # d = [optimizeCHSH(n) for n in range(9,11)]
-corr = 1e0 # Correction factor
+corr = 3e0 # Correction factor
 Min = 11
 Max = 12
 if __name__=="__main__":
