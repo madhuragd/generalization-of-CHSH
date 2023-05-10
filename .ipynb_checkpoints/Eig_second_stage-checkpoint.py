@@ -105,7 +105,7 @@ def gen_guess(n,x):
     return guess_beta+guess_gamma
 
 
-with open('test_Eig_second_stage.pi','rb') as f:
+with open('test_Eig_first_stage.pi','rb') as f:
     results_guess = load(f)
     res_list_guess = [(k, v) for k, v in results_guess.items()]
     
