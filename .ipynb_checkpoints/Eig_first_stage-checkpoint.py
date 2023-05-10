@@ -19,7 +19,7 @@ def max_viol(n):
     return inner_fn
 
 def init_point(n):
-    return lambda : .09*np.random.random(2) # an argumentless function returning .09*np.random.random(1)
+    return lambda : .09*np.random.rand(2) # an argumentless function returning .09*np.random.random(2)
 
 
 if __name__=="__main__":
