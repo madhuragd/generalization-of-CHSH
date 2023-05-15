@@ -13,8 +13,7 @@ import math
 
 ###### Retrieving calculated values from relevant file #########
 
-# path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
-with open('max_chsh_states.pi','rb') as f:
+with open('max_viol_states.pi','rb') as f:
      opti_evec = load(f)
         
 mat_delta = [d[3].reshape(d[0],d[0]) for d in opti_evec] # In $\ket{\beta_i}\otimes\ket{\gamma_i}$ basis
