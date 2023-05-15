@@ -138,5 +138,5 @@ def gen_plot(betas,gammas):
         axs[1][i].set_ylabel("Imaginary Axis", fontsize=14)
     axs[0][2].legend(bbox_to_anchor=(1, 1.02))
     # plt.legend()
-    fig.show()
+    fig
     return fig
