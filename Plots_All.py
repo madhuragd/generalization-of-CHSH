@@ -18,7 +18,7 @@ with open('max_viol_ecs.pi','rb') as f:
     results_ECS = load(f)
     res_list_ECS = [(k, v) for k, v in results_ECS.items()]
 
-with open('max_chsh_tmsv.pi','rb') as f:
+with open('max_viol_tmsv.pi','rb') as f:
     res_list_TMSV = load(f)
     # res_list_TMSV = results_TMSV
     # res_list_TMSV = [(k, v) for k, v in results_TMSV.items()]
