@@ -20,8 +20,6 @@ with open('max_viol_ecs.pi','rb') as f:
 
 with open('max_viol_tmsv.pi','rb') as f:
     res_list_TMSV = load(f)
-    # res_list_TMSV = results_TMSV
-    # res_list_TMSV = [(k, v) for k, v in results_TMSV.items()]
     
 with open('Eig_second_stage.pi','rb') as f:
     results_MZI = load(f)

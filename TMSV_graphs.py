@@ -26,7 +26,11 @@ plt.show()
 
 ##### Plots TMSV violation with fitting
 
+<<<<<<< Updated upstream
 with open('max_viol_tmsv.pi','rb') as f: # Loads data
+=======
+with open('max_viol_tmsv_madhura.pi','rb') as f: # Loads data
+>>>>>>> Stashed changes
     res_list_TMSV = load(f)
 
 squeez = [(k,-res_list_TMSV[k]['fun']) for k in res_list_TMSV.keys()] # Maximal bound
