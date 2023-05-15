@@ -17,8 +17,8 @@ from _pickle import load, dump
 
 #########  Load previously calculated results for Delta  ##########
 
-path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
-with open(path+'max_chsh_eig.pi','rb') as f: 
+# path = "C:\\Users\\user\\OneDrive\\Documents\\Confocal_acq\\Test\\"
+with open('max_chsh_eig.pi','rb') as f: 
     results = load(f)
 
 res_list = [(k, v) for k, v in results.items()] 
