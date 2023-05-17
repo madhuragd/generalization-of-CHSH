@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
-
-
 ## Code for plotting Eigenvectors and Schmidt Coefficients.
 
 import matplotlib.pyplot as plt
 import numpy as np
 from _pickle import load
-import math
 
 ###### Retrieving calculated values from relevant file #########
 
@@ -17,6 +13,7 @@ with open('max_viol_states.pi','rb') as f:
      opti_evec = load(f)
         
 mat_delta = [d[3].reshape(d[0],d[0]) for d in opti_evec] # In $\ket{\beta_i}\otimes\ket{\gamma_i}$ basis
+mat_delta = [-x if x[0,0]<0 else x for x in mat_delta]
 mat_gamma = [d[2].reshape(d[0],d[0]) for d in opti_evec] # In orthonormal basis
 mat_svd = [np.linalg.svd(d) for d in mat_gamma] # Singular value decomposition of eigenvectors in orthonormal basis        
         
@@ -58,6 +55,6 @@ plt.text(-21, 0.7, '(g)', fontsize=15)
 plt.text(-4, 0.7, '(h)', fontsize=15)
 cbar_ax = fig.add_axes([0.91, 0.565, 0.015, 0.315])
 cbar = fig.colorbar(im, cax=cbar_ax)
-
+plt.show()
 plt.savefig('max_eigvec_schmidt_coeff_plots.pdf', format='pdf', bbox_inches="tight") # Saves figure
 

@@ -1,7 +1,5 @@
 import numpy as np
 from numpy.linalg.linalg import eigvalsh
-from scipy.optimize import minimize
-from operator import itemgetter
 from util import LHS_of_BCCB, pickle_results, optimize
 
 min_n = 2

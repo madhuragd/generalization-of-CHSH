@@ -53,27 +53,12 @@ def max_viol(n,r):
     # print("time: ",time()-t, "min func: ",min_res['fun'])
     return min_res
 
+if __name__ == "__main__":
 
-r_lin = np.linspace(0,3,31)
+	r_lin = np.linspace(0,3,31)
 
-st = {i:[max_viol(i,r) for r in r_lin] for i in range(2,8)}
+	st = {i:[max_viol(i,r) for r in r_lin] for i in range(2,8)}
 
-with open(path+"tmsv_r.pi",'wb') as f:
-    dump(st,f)
+	with open(path+"tmsv_r.pi",'wb') as f:
+		dump(st,f)
 
-    
-# with open(path+"tmsv_r.pi",'rb') as f:
-#     d = load(f)
-    
-# r_lin = np.linspace(0,3,31)
-# n = range(2,8)
-# funs = [[-d[i][j]['fun']-2*i+2 for j in range(len(r_lin))] for i in n]
-
-
-# for i in range(len(n)):
-#     plt.plot(r_lin,funs[i],'.')
-    
-# plt.xlabel(r'$r$',fontsize=14)
-# plt.title(r'$D(n)$ vs. $r$',fontsize=15)
-# plt.savefig('tmsv_viol_r.pdf', format='pdf',bbox_inches="tight") # Saves figure
-# plt.show()

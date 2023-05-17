@@ -1,13 +1,10 @@
 import numpy as np
 from numpy.linalg.linalg import eigvalsh
-from scipy.optimize import minimize
-from _pickle import dump,load
-from operator import itemgetter
 from util import LHS_of_BCCB, pickle_results, optimize
-import os
+
 
 min_n = 2
-max_n = 4
+max_n = 20
 num_opti = 100 # No. of times to optimize
 
 def max_viol(n):
@@ -18,7 +15,7 @@ def max_viol(n):
         
         try:
             return np.amin(np.linalg.eigvalsh(LHS_of_BCCB(beta,gamma)))
-        except:
+        except np.linalg.LinAlgError:
             print(n)
             return 0
     return inner_fn
@@ -28,5 +25,5 @@ def init_point(n):
 
 
 if __name__=="__main__":
-    pickle_results('test_Eig_first_stage.pi',optimize(max_viol, init_point, num_opti),range(min_n,max_n))
-                    # Filename to store results
+    
+    pickle_results('Eig_first_stage.pi',optimize(max_viol, init_point, num_opti),range(min_n,max_n))

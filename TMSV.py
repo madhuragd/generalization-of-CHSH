@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[14]:
-
-
 ## Code to calculate the maximal CHSH bound for n-MZI+TMSV setting.
 
 import numpy as np
@@ -74,8 +71,6 @@ min_n = 2 # Min. n for doing above calculations
 max_n = 4 # Max. n for doing above calculations
 
 if __name__ == "__main__":
-
-	from util import pickle_results 
 
 	pickle_results('max_viol_tmsv.pi', max_violation, range(min_n,max_n))
     

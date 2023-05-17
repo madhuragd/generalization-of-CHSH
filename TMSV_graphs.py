@@ -12,7 +12,6 @@ with open("tmsv_r.pi",'rb') as f: # Loads data
 r_lin = np.linspace(0,3,31) # Defines r
 funs = {n:[-d[n][j]['fun']-2*n+2 for j in range(len(r_lin))] for n in range(2,8)} # Violations D(n)
 
-
 # Plot details
 for i in range(2,8):
     plt.plot(r_lin,funs[i],'.')
@@ -23,29 +22,20 @@ plt.savefig('tmsv_viol_r.pdf', format='pdf',bbox_inches="tight") # Saves figure
 plt.show()
 
 
-
 ##### Plots TMSV violation with fitting
 
-<<<<<<< Updated upstream
 with open('max_viol_tmsv.pi','rb') as f: # Loads data
-=======
-with open('max_viol_tmsv_madhura.pi','rb') as f: # Loads data
->>>>>>> Stashed changes
-    res_list_TMSV = load(f)
+	res_list_TMSV = load(f)
 
-squeez = [(k,-res_list_TMSV[k]['fun']) for k in res_list_TMSV.keys()] # Maximal bound
-viol_squeez = [(n[0],(n[1]-2*n[0]+2)) for n in squeez] # Violation D(n)
-    
+viol_squeez = [(n,-v['fun']-2*n+2) for n,v in res_list_TMSV.items()] # Violation D(n)
     
 ### Function to fit
 def func_sq(x,a,c,b):
     return a + c*(np.exp(-b*x)) #-np.exp(-2*b)
 
-xdata_tmsv = [n[0] for n in viol_squeez] # n values
-ydata_tmsv = [n[1] for n in viol_squeez] # D(n) values
-popt_tmsv, pcov_tmsv = curve_fit(func_sq, xdata_tmsv, ydata_tmsv) # Fitting
-
-# popt_tmsv =  optimal fitted values for a,b,c;  pcov_tmsv = covariance matrix of fit
+xdata_tmsv,ydata_tmsv = zip(*viol_squeez)
+popt_tmsv, pcov_tmsv = curve_fit(func_sq, xdata_tmsv,ydata_tmsv) # Fitting
+print(popt_tmsv, pcov_tmsv)	# popt_tmsv =  optimal fitted values for a,b,c;  pcov_tmsv = covariance matrix of fit
 
 fitted_tmsvx = [func_sq(x,popt_tmsv[0],popt_tmsv[1],popt_tmsv[2]) for x in np.linspace(2,20,100)] # Fitted function for n in [2,20) 
 plt.plot(np.linspace(2,20,100),fitted_tmsvx,'r-',xdata_tmsv,ydata_tmsv,'y*') # Plots violation and fitting
@@ -57,6 +47,9 @@ plt.ylabel(r"$\mathrm{D}(n)$",fontsize=14)
 plt.title(r'$\mathrm{D}(n)$ vs. $n$',fontsize=15)
 plt.savefig('TMSV_with_fitting.pdf', format='pdf', bbox_inches="tight") # Saves figure
 plt.show()
+
+
+##### Plots sequences of displacements for both parties
 
 n=19
 x = res_list_TMSV[n].x[1:]

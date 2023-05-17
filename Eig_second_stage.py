@@ -12,8 +12,6 @@ from operator import itemgetter
 from util import LHS_of_BCCB, pickle_results, optimize
 from _pickle import load, dump
 
-
-
 def max_viol(n):
     def inner_fn(x):
         gamma = x[:n] 
@@ -21,7 +19,7 @@ def max_viol(n):
         
         try:
             return np.amin(np.linalg.eigvalsh(LHS_of_BCCB(beta,gamma)))
-        except:
+        except np.linalg.LinAlgError:
             print(n)
             return 0
     return inner_fn
@@ -45,7 +43,7 @@ def optimize_second_stage(n): # Function for second stage of optimization. Optim
     x0 = init_point(n) # Initial point taken from first_stage file
     t = time()
     min_res = minimize(max_viol(n),x0) # Minimization
-    print(n,t-time(),min_res['fun'])
+    print(n,time()-t,min_res['fun'])
     return min_res
 
 if __name__=="__main__":
