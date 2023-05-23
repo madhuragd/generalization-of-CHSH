@@ -160,4 +160,4 @@ if __name__ == "__main__":
 
 	from util import pickle_results 
 
-	pickle_results('test_max_viol_ecs.pi', max_violation, range(2,20))
+	pickle_results('test_max_viol_ecs.pi', max_violation, [4,17])
