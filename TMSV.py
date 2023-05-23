@@ -58,7 +58,7 @@ def max_violation(n):
     ii. Optimal x
     """
     t=time()
-    m = 50 # No. of times to optimize function.
+    m = 100 # No. of times to optimize function.
     min_res = [minimize(CHSH_sq(n),np.random.rand(2*n-1).astype(np.longdouble)) for _ in range(m)] # Can change m=50 to 100,200,etc. to inc. no. 
                                                                                                   # of times initial parameters are tossed
     print(n,t-time(),min(i['fun'] for i in min_res)) # Prints n, time of computation, min CHSH_sq(n)
@@ -68,10 +68,10 @@ def max_violation(n):
 ###########   Obtaining and storing results   ############
 
 min_n = 2 # Min. n for doing above calculations
-max_n = 4 # Max. n for doing above calculations
+max_n = 20 # Max. n for doing above calculations
 
 if __name__ == "__main__":
 
-	pickle_results('max_viol_tmsv.pi', max_violation, range(min_n,max_n))
+	pickle_results('test_max_viol_tmsv.pi', max_violation, range(min_n,max_n))
     
     
