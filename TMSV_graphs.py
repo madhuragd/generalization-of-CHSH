@@ -24,7 +24,7 @@ plt.show()
 
 ##### Plots TMSV violation with fitting
 
-with open('test_max_viol_tmsv.pi','rb') as f: # Loads data
+with open('max_viol_tmsv.pi','rb') as f: # Loads data
 	res_list_TMSV = load(f)
 
 viol_squeez = [(n,-v['fun']-2*n+2) for n,v in res_list_TMSV.items()] # Violation D(n)

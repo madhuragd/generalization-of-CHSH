@@ -72,6 +72,6 @@ max_n = 20 # Max. n for doing above calculations
 
 if __name__ == "__main__":
 
-	pickle_results('test_max_viol_tmsv.pi', max_violation, range(min_n,max_n))
+	pickle_results('max_viol_tmsv.pi', max_violation, range(min_n,max_n))
     
     

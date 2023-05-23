@@ -39,7 +39,7 @@ for n in X:
 	print(n,-d[n]['fun']-2*(n-1),d[n].x.shape)
 
 
-n=15
+n=7
 x = d[n].x
 a,a1 = x[:2]
 x = x[2:]

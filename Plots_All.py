@@ -45,8 +45,8 @@ plt.show()
 
 ### Plots CHSH violations for theoretical and n-MZI settings only 
 
-plt.plot(*zip(*viol_all),'r.',*zip(*viol_theor),'b^')
-plt.legend(["Generalized CHSH","CHSH for $n$-MZI settings"], bbox_to_anchor=(0.4, 0.5))
+plt.plot(*zip(*viol_theor),'r.',*zip(*viol_eig),'b^')
+plt.legend(["Quantum bound for BCCB inequality","Bound for BCCBi with $n$-MZI settings"], bbox_to_anchor=(0.3, 0.3))
 plt.xlabel(r"$n$",fontsize=14)
 plt.xticks(np.arange(2, 21, step=2))
 plt.minorticks_on()
